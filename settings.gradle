@@ -1,0 +1,4 @@
+rootProject.name = 'glaze'
+
+//include ':framework'
+//project (':framework').projectDir = new File('../../alpas/framework')
