@@ -5,7 +5,8 @@ Use Glaze to access your [Alpas](https://alpas.dev) [named routes](https://alpas
 ### Usage
 
 You can use Glaze in one of two ways - using `glaze` template function that will make a global `Glaze` JavaScript object as well as a `route()` helper function, you can then call these to access named routes in your JavaScript.
-You can also integrate Glaze with by importing it in your asset pipeline. You can then use it from a frontend library like VueJS easily.
+
+You can also integrate Glaze with Mix by importing it in your asset pipeline. You can then use it from a frontend library like VueJS easily.
 
 #### Examples:
 
