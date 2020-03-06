@@ -65,6 +65,7 @@ build/
 .gradle/
 node_modules
 *.jar
+!gradle/wrapper/*.jar
 *.log
 
 .env
