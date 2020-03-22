@@ -1145,14 +1145,11 @@ var route_Router = /*#__PURE__*/function (_String) {
   }, {
     key: "matchUrl",
     value: function matchUrl() {
-      var windowUrl = window.location.hostname + (window.location.port ? ':' + window.location.port : '') + window.location.pathname; // Strip out optional parameters
-
-      var optionalTemplate = this.template.replace(/(\/\<[^\>]*\?\>)/g, '/').replace(/(\<[^\>]*\>)/gi, '[^/?]+').replace(/\/?$/, '').split('://')[1];
-      var searchTemplate = this.template.replace(/(\<[^\>]*\>)/gi, '[^/?]+').split('://')[1];
+      var windowUrl = window.location.hostname + window.location.pathname;
+      var template = this.template.replace(/(:[0-9]+)/gi, '');
+      var searchTemplate = template.replace(/(\<[^\>]*\>)/gi, '[^]+').split('//')[1];
       var urlWithTrailingSlash = windowUrl.replace(/\/?$/, '/');
-      var regularSearch = new RegExp('^' + searchTemplate + '/$').test(urlWithTrailingSlash);
-      var optionalSearch = new RegExp('^' + optionalTemplate + '/$').test(urlWithTrailingSlash);
-      return regularSearch || optionalSearch;
+      return new RegExp('^' + searchTemplate + '/$').test(urlWithTrailingSlash);
     }
   }, {
     key: "constructQuery",

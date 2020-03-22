@@ -18,27 +18,28 @@ open class GlazeServiceProvider : ServiceProvider {
     }
 
     override fun commands(app: Application): List<Command> {
-        return listOf(GlazePublishCommand(app.make()))
+        return listOf(GlazePublishCommand(app.make(), app.make()))
     }
 
     private fun addGlazeFunction(app: Application) {
         app.addCustomFunction(glazeFunctionName) {
             val json = GlazeRouteGenerator(app.make()).compile()
             val baseUri = call.uri("/")
+            val baseUrl = baseUri.toString()
             val routeFunction = routeFunction(call.env)
             """
                <script type="text/javascript">
                  var Glaze = {
                    namedRoutes: $json,
-                   baseUrl : '$baseUri',
+                   baseUrl : '$baseUrl',
                    baseProtocol: '${baseUri.scheme}',
                    baseDomain: '${baseUri.host}',
                    basePort: ${baseUri.port},
                    defaultParameters: []
                  };
-                 
+
                  $routeFunction
-               </script> 
+               </script>
             """.trimIndent()
         }
     }

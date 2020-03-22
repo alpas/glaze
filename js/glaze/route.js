@@ -116,29 +116,17 @@ class Router extends String {
   matchUrl() {
     let windowUrl =
       window.location.hostname +
-      (window.location.port ? ':' + window.location.port : '') +
       window.location.pathname
 
-    // Strip out optional parameters
-    let optionalTemplate = this.template
-      .replace(/(\/\<[^\>]*\?\>)/g, '/')
-      .replace(/(\<[^\>]*\>)/gi, '[^/?]+')
-      .replace(/\/?$/, '')
-      .split('://')[1]
+    let template = this.template
+      .replace(/(:[0-9]+)/gi, '')
 
-    let searchTemplate = this.template
-      .replace(/(\<[^\>]*\>)/gi, '[^/?]+')
-      .split('://')[1]
+    let searchTemplate = template
+      .replace(/(\<[^\>]*\>)/gi, '[^]+')
+      .split('//')[1]
     let urlWithTrailingSlash = windowUrl.replace(/\/?$/, '/')
 
-    const regularSearch = new RegExp('^' + searchTemplate + '/$').test(
-      urlWithTrailingSlash
-    )
-    const optionalSearch = new RegExp('^' + optionalTemplate + '/$').test(
-      urlWithTrailingSlash
-    )
-
-    return regularSearch || optionalSearch
+    return new RegExp('^' + searchTemplate + '/$').test(urlWithTrailingSlash)
   }
 
   constructQuery() {

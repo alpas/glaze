@@ -13,8 +13,7 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-//    compileOnly project(':framework')
-    compileOnly 'com.github.alpas:alpas:beaa02'
+    compileOnly "dev.alpas:framework:0.16.4"
 }
 
 compileKotlin {

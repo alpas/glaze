@@ -2,18 +2,20 @@ package dev.alpas.glaze
 
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
+import dev.alpas.Environment
 import dev.alpas.asGray
 import dev.alpas.console.Command
 import dev.alpas.routing.Router
 import dev.alpas.routing.url
 import java.io.File
+import java.net.URI
 import java.nio.file.Path
 import java.nio.file.Paths
 
-class GlazePublishCommand(private val router: Router) : Command(name = "glaze:publish", help = "Publish Glaze JS files") {
+class GlazePublishCommand(private val router: Router, private val env: Environment) : Command(name = "glaze:publish", help = "Publish Glaze JS files") {
     private val defaultPath get() = Paths.get(resourcesDir.path, "js").toAbsolutePath().toString()
     private val defaultName = "glaze.js"
-    val url by option("--url", help = "The base URL. Default is ${"/".asGray()}").default("/")
+    val url by option("--url", help = "The base URL. Default is ${"http://localhost:${env("APP_PORT")}".asGray()}").default("http://localhost:${env("APP_PORT")}")
     val path by option("--path", help = "The full output path. Defaults to ${"resources/js".asGray()}").default(defaultPath)
     val name by option("--name", help = "The name of the script. Default is ${defaultName.asGray()}").default(defaultName)
 
@@ -37,7 +39,7 @@ class GlazePublishCommand(private val router: Router) : Command(name = "glaze:pu
 
     private fun writeGlazeScript(): File {
         val json = GlazeRouteGenerator(router).compile()
-        val baseUri = url("", this.url)
+        val baseUri = url(URI(this.url))
         val glazeScript = """
                  var Glaze = {
                    namedRoutes: $json,
@@ -47,13 +49,13 @@ class GlazePublishCommand(private val router: Router) : Command(name = "glaze:pu
                    basePort: ${baseUri.port},
                    defaultParameters: []
                  };
-                 
+
                  if (typeof window.Glaze !== 'undefined') {
                    for (var name in window.Glaze.namedRoutes) {
                      Glaze.namedRoutes[name] = window.Glaze.namedRoutes[name];
                    }
                  }
-    
+
                  export { Glaze }
             """.trimIndent()
 
