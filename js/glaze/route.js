@@ -28,7 +28,7 @@ class Router extends String {
 
     if (
       params.hasOwnProperty('id') &&
-      this.template.indexOf('{id}') == -1
+      this.template.indexOf('<id>') == -1
     ) {
       params = [params.id]
     }
@@ -51,7 +51,7 @@ class Router extends String {
     if (this.hydrated) return this.hydrated
 
     let hydrated = this.template.replace(
-      /<([^>]+)>/gi,
+      /(\<[^\>]*\>)/gi,
       (tag, i) => {
         let keyName = this.trimParam(tag),
           defaultParameter,

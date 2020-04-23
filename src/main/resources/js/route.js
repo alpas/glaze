@@ -1065,7 +1065,7 @@ var route_Router = /*#__PURE__*/function (_String) {
       // wrap this in an array. This could be slightly dangerous and I want to find
       // a better solution for this rare case.
 
-      if (params.hasOwnProperty('id') && this.template.indexOf('{id}') == -1) {
+      if (params.hasOwnProperty('id') && this.template.indexOf('<id>') == -1) {
         params = [params.id];
       }
 
@@ -1091,7 +1091,7 @@ var route_Router = /*#__PURE__*/function (_String) {
       var _this2 = this;
 
       if (this.hydrated) return this.hydrated;
-      var hydrated = this.template.replace(/<([^>]+)>/gi, function (tag, i) {
+      var hydrated = this.template.replace(/(\<[^\>]*\>)/gi, function (tag, i) {
         var keyName = _this2.trimParam(tag),
             defaultParameter,
             tagValue;

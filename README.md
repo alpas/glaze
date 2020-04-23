@@ -90,4 +90,9 @@ Vue.mixin({
 You can now use the `route()` method in your Vue components like so: `<a :href="route('login')">Login</a>`
 Or you can call it from your VueJS component's script like so: `this.route('login')`
 
+
+### Glaze Config
+
+You can set the base URL to be used for each routes by extending the `GlazeConfig` file.
+
 Glaze is hugely inspired and based on [Ziggy](https://github.com/tightenco/ziggy) and [js-routes](https://github.com/railsware/js-routes).

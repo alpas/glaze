@@ -1,11 +1,9 @@
 package dev.alpas.glaze
 
-import dev.alpas.Application
-import dev.alpas.Environment
-import dev.alpas.ServiceProvider
+import dev.alpas.*
 import dev.alpas.console.Command
-import dev.alpas.make
 import dev.alpas.view.addCustomFunction
+import java.net.URI
 
 @Suppress("unused")
 open class GlazeServiceProvider : ServiceProvider {
@@ -22,12 +20,27 @@ open class GlazeServiceProvider : ServiceProvider {
     }
 
     private fun addGlazeFunction(app: Application) {
+        val glazeBaseUrl = app.config { GlazeConfig(app.env) }.baseUrl.let { URI(it) }
+        val glazeScript = if (app.env.isProduction) {
+            glazeScript(app, glazeBaseUrl)
+        } else {
+            null
+        }
         app.addCustomFunction(glazeFunctionName) {
-            val json = GlazeRouteGenerator(app.make()).compile()
-            val baseUri = call.uri("/")
-            val baseUrl = baseUri.toString()
-            val routeFunction = routeFunction(call.env)
-            """
+            val uri = if (call.url.startsWith("http://localhost")) {
+                call.uri("/")
+            } else {
+                glazeBaseUrl
+            }
+            glazeScript ?: glazeScript(call, uri)
+        }
+    }
+
+    private fun glazeScript(container: Container, baseUri: URI): String {
+        val json = GlazeRouteGenerator(container.make()).compile()
+        val baseUrl = baseUri.toString()
+        val routeFunction = routeFunction(container.env)
+        return """
                <script type="text/javascript">
                  var Glaze = {
                    namedRoutes: $json,
@@ -41,7 +54,6 @@ open class GlazeServiceProvider : ServiceProvider {
                  $routeFunction
                </script>
             """.trimIndent()
-        }
     }
 
     private fun routeFunction(env: Environment): String {
