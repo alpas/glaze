@@ -39,7 +39,7 @@ open class GlazeServiceProvider : ServiceProvider {
     private fun glazeScript(container: Container, baseUri: URI): String {
         val json = GlazeRouteGenerator(container.make()).compile()
         val baseUrl = baseUri.toString()
-        val routeFunction = routeFunction(container.env)
+        val routeFunction = routeFunction(container.make())
         return """
                <script type="text/javascript">
                  var Glaze = {
